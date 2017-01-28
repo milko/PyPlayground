@@ -143,8 +143,17 @@ for p in x:
     print(str(g.makePath(p)))
 print("===========================")
 
-print("\nDFS")
-x = list(g.dfs("A", "L"))
+print("\nDFS all depth levels")
+x = list(g.dfs("A", "L", -1))
+# x = list(g.dfs("A", "L", None))
+print(len(x))
+for p in x:
+    print(str(g.makePath(p)))
+print("===========================")
+
+print("\nDFS 6 depth levels max")
+x = list(g.dfs("A", "L", 5))
+print(len(x))
 for p in x:
     print(str(g.makePath(p)))
 print("===========================")

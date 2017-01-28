@@ -349,17 +349,22 @@ class Graph:
     # If any of the start and goal nodes are not in the graph, the method will return None.
     #   - start => (String): Start node, will be converted to string.
     #   - goal => (String):  Goal node, will be converted to string.
+    #   - level => (Int):    Maximum depth level (zero-based); use -1 for all levels, or
+    #                        None to set with nummber of nodes in graph.
     #   - path => (list):    Current path, used when recursing.
     #   => (list): List of paths | None.
     ###
-    def dfs(self, start, goal, path=None):
+    def dfs(self, start, goal, level=-1, path=None):
         if( path is None ):
             path = [start]
+            if( level is None ):
+                level = len(self.edges)
         if( start == goal ):
             yield path                                                              # ==>
-        for key, cost in self.edges[start].items():
-            if (not (key in path)):
-                yield from self.dfs( key, goal, path + [key] )
+        if( level != 0 ):
+            for key, cost in self.edges[start].items():
+                if (not (key in path)):
+                    yield from self.dfs( key, goal, level - 1, path + [key] )
 
     ###
     # Traverse graph in Uniform-Cost search.
