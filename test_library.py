@@ -44,6 +44,23 @@ def make_undirected_graph():
     g.relateNodes("H", "M", 3)
     return g
 
+def make_example_graph():
+    g = Graph()
+    g.relateNodes("S", "A", 3)
+    g.relateNodes("S", "B", 6)
+    g.relateNodes("S", "C", 2)
+    g.relateNodes("A", "D", 3)
+    g.relateNodes("B", "D", 4)
+    g.relateNodes("B", "G", 9)
+    g.relateNodes("B", "E", 2)
+    g.relateNodes("C", "E", 1)
+    g.relateNodes("D", "F", 5)
+    g.relateNodes("E", "F", 6)
+    g.relateNodes("E", "H", 5)
+    g.relateNodes("F", "G", 5)
+    g.relateNodes("H", "G", 8)
+    return g
+
 print("\nQueue")
 q = Queue()
 q.put("A")
@@ -91,6 +108,21 @@ print(str(q.pop()))
 print(str(q))
 print("===========================")
 
+print("\nExample graph")
+g = make_example_graph()
+print(str(g))
+print("===========================")
+
+print("\nLeast nodes")
+x = g.leastNodes("S", "G")
+print(str(x))
+print("===========================")
+
+print("\nLeast cost")
+x = g.leastCost("S", "G")
+print(str(x))
+print("===========================")
+
 print("\nGraph Directional")
 g = make_directed_graph()
 print(str(g))
@@ -108,17 +140,27 @@ print("===========================")
 
 print("\nBFS")
 x = list(g.bfs("A", "L"))
+print(len(x))
 for p in x:
     print(str(g.makePath(p)))
 print("===========================")
 
-print("\nDFS")
-x = list(g.dfs("A", "L"))
+print("\nDFS all depth levels")
+x = list(g.dfs("A", "L", -1))
+# x = list(g.dfs("A", "L", None))
+print(len(x))
 for p in x:
     print(str(g.makePath(p)))
 print("===========================")
 
-print("\nUFS")
+print("\nDFS 6 depth levels max")
+x = list(g.dfs("A", "L", 5))
+print(len(x))
+for p in x:
+    print(str(g.makePath(p)))
+print("===========================")
+
+print("\nUCS")
 x = g.ucs("A", "L")
 print(str(g.makePath(x)))
 
@@ -139,6 +181,7 @@ print("===========================")
 
 print("\nBFS")
 x = list(g.bfs("A", "L"))
+print(len(x))
 for p in x:
     print(str(g.makePath(p)))
 print("===========================")
@@ -158,6 +201,8 @@ for p in x:
     print(str(g.makePath(p)))
 print("===========================")
 
-print("\nUFS")
+print("\nUCS")
 x = g.ucs("A", "L")
 print(str(g.makePath(x)))
+print("===========================")
+print("===========================")

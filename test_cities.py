@@ -90,3 +90,13 @@ print(str(x))
 print( "Least cost path from Charleston to Seattle" )
 x = g.leastCost("Charleston", "Seattle")
 print(str(x))
+
+print("===========================")
+
+print( "DFS from Miami to Vancouver decreasing max depth:" )
+depth = int( len(g.edges) / 2 )
+decr = 2
+while depth > 0:
+    x = g.dfs("Miami", "Vancouver", depth)
+    print("(" + str(depth) + "): " + str(len(list(x))))
+    depth -= decr

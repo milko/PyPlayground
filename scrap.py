@@ -20,9 +20,9 @@ x = ["uno", "due", "tre"]
 x.extend(["quattro", "cinque"])
 print( str(x) )
 print("===========================")
-a = set(["uno", "due", "tre", "qua", "cin"])
+a = {"uno", "due", "tre", "qua", "cin"}
 print(a)
-b = set(["uno", "tre"])
+b = {"uno", "tre"}
 print(b)
 print( str(a - b) )
 print("===========================")
@@ -30,3 +30,5 @@ a = ['A', 'C', 'F', 'D', 'B', 'E']
 x = a.index('F')
 print(str(x))
 print(str(a[x]))
+print("===========================")
+print("===========================")

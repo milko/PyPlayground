@@ -128,7 +128,7 @@ class Stack:
 #   __str__ => String:  Return a string as [ A(x) B(x) C(x) ... Z(x) ], where x is the cost.
 #   empty   => Boolean: Return True if empty.
 #   put     => <T>:     Add an element.
-#   pop     => <T>:     Remove and return min or max element.
+#   pop     => <T>:     Remove and return min or max element as a (cost, item) touple.
 ###
 class Heap:
     ###
@@ -238,28 +238,20 @@ class Graph:
     ###
     # Return a path object from the provided path list.
     # This method will return a Path object populated from the provided path list.
-    # If any vertex or edge is not resolved, the method will return None.
+    # If any vertex or edge is not resolved, the method will fail.
     #   - path => (list): Pas as a list of vertex keys.
-    #   => (Path): Path with total and individual costs | None.
+    #   => (Path): Path with total and individual costs.
     ###
     def makePath(self, path):
         p = Path()
-        if (len(path) > 0):
+        if( len(path) > 0 ):
             start = path.pop(0)
-            p.path[start] = 0
+            p.add(start)
             while( len(path) > 0 ):
                 dest = path.pop(0)
-                edges = self.getEdges(start)
-                if( not(edges is None) ):
-                    cost = edges.get(dest)
-                    if( not(cost is None) ):
-                        p.cost += cost
-                        p.path[dest] = cost
-                        start = dest
-                    else:
-                        return None                                                 # ==>
-                else:
-                    return None                                                     # ==>
+                cost = self.getEdges(start).get(dest)
+                p.add(dest, cost)
+                start = dest
         return p                                                                    # ==>
 
     ###
@@ -361,10 +353,11 @@ class Graph:
                 level = len(self.edges)
         if( start == goal ):
             yield path                                                              # ==>
-        if( level != 0 ):
-            for key, cost in self.edges[start].items():
-                if (not (key in path)):
-                    yield from self.dfs( key, goal, level - 1, path + [key] )
+        if( level == 0 ):
+            return None                                                             # ==>
+        for key, cost in self.edges[start].items():
+            if (not (key in path)):
+                yield from self.dfs( key, goal, level - 1, path + [key] )
 
     ###
     # Traverse graph in Uniform-Cost search.
@@ -378,18 +371,19 @@ class Graph:
     def ucs(self, start, goal):
         start = str(start)
         goal = str(goal)
-        visited = set()
-        queue = PriorityQueue()
-        queue.put( (0, start, [start]) )
-        while queue:
-            total, node, path = queue.get()
-            if node not in visited:
-                visited.add(node)
-                if node == goal:
-                    return path                                                     # ==>
-                for vertex, cost in self.edges[node].items():
-                    if vertex not in visited:
-                        queue.put( (total + cost, vertex, path + [vertex]) )
+        if( start in self.edges and goal in self.edges ):
+            visited = set()
+            queue = PriorityQueue()
+            queue.put( (0, start, [start]) )
+            while queue:
+                total, node, path = queue.get()
+                if node not in visited:
+                    visited.add(node)
+                    if node == goal:
+                        return path                                                 # ==>
+                    for vertex, cost in self.edges[node].items():
+                        if vertex not in visited:
+                            queue.put( (total + cost, vertex, path + [vertex]) )
 
 
 ###
@@ -427,3 +421,18 @@ class Path:
         string += ", ".join(list)
         string += " ]"
         return string                                                               # ==>
+
+    ###
+    # Add a path element.
+    # The method will append a new element to the path and increase the path cost by the
+    # provided cost.
+    # If the node already exists in the path, the method will not add it, not increment
+    # the tetal cost.
+    #   - node => (any): Edge vertex key, will be converted to string (any).
+    #   - cost => (Int): Relationship weight.
+    ###
+    def add(self, node, cost=0):
+        key = str(node)
+        if( not(key in self.path) ):
+            self.cost += cost
+            self.path[key] = cost
